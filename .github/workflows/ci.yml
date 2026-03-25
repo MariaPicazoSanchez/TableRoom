@@ -30,6 +30,12 @@ jobs:
       - name: Install client dependencies
         run: npm ci --prefix client
 
+      - name: Install game dependencies (uno)
+        run: npm ci --prefix client/games/uno
+
+      - name: Install game dependencies (4raya)
+        run: npm ci --prefix client/games/4raya
+
       - name: Run server tests
         run: npm --prefix server test
         env:
