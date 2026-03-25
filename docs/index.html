@@ -236,6 +236,32 @@
     }
     footer a { color: var(--primary); }
 
+    /* ── Lightbox ──────────────────────────────────────────────── */
+    .game-gif { cursor: zoom-in; }
+    .lightbox {
+      display: none;
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(5,11,31,.85);
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 90vh;
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(5,11,31,.5);
+      cursor: zoom-out;
+    }
+    .lightbox-close {
+      position: fixed; top: 1rem; right: 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 999px; width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.1rem; color: var(--text);
+      box-shadow: var(--shadow);
+    }
+    .lightbox-close:hover { background: var(--surface2); }
+
     /* ── Responsive ────────────────────────────────────────────── */
     @media (max-width: 680px) {
       .game-block, .game-block.reverse { grid-template-columns: 1fr; direction: ltr; }
@@ -255,7 +281,7 @@
         <a href="#faq">FAQ</a>
       </div>
       <!-- Replace # with your live URL when deployed -->
-      <a class="btn-nav" href="#">Play now</a>
+      <a class="btn-nav" href="https://pruebas-1066426825741.europe-west1.run.app">Play now</a>
     </div>
   </nav>
 
@@ -266,7 +292,7 @@
       <h1>Board games, online,<br>with your friends</h1>
       <p>TableRoom lets you play Última Carta, Connect 4, and Checkers in real time — from any browser, no install needed.</p>
       <div class="hero-actions">
-        <a class="btn-primary" href="#">Play now</a>
+        <a class="btn-primary" href="https://pruebas-1066426825741.europe-west1.run.app">Play now</a>
         <a class="btn-outline" href="https://github.com/MariaPicazoSanchez/TableRoom">View on GitHub</a>
       </div>
     </div>
@@ -454,6 +480,31 @@
       </p>
     </div>
   </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lightbox-close">✕</span>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <script>
+    const lightbox     = document.getElementById('lightbox');
+    const lightboxImg  = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    document.querySelectorAll('.game-gif').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+      });
+    });
+
+    function closeLightbox() { lightbox.classList.remove('open'); }
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target === lightboxImg) closeLightbox(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+  </script>
 
 </body>
 </html>
