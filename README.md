@@ -4,9 +4,33 @@ A web platform to play board games online with friends in real time.
 
 ## Games
 
-- **UNO** — the classic multiplayer card game
-- **Connect 4** — with AI bot (minimax + alpha-beta pruning)
-- **Checkers** — with AI bot (minimax + alpha-beta pruning)
+### Última Carta
+A card game inspired by UNO with custom rules. Goal: be the first to empty your hand.
+
+**Valid plays:** same color or same value as the top card, or a wildcard.
+
+| Card | Effect |
+|------|--------|
+| Numbers 0–9 | Available in 4 colors (red, green, blue, yellow) |
+| +2 | Next player draws 2 cards and loses their turn |
+| +6 / +8 | Next player draws 6 or 8 cards |
+| Skip | Next player loses their turn |
+| Reverse | Reverses the play direction |
+| Double | Next player draws cards equal to their current hand size |
+| Wild | Changes the current color |
+| +4 (wildcard) | Next player draws 4 cards, you choose the new color |
+| Swap (wildcard) | Swap your entire hand with another player |
+| Discard All (wildcard) | Discard all cards of a chosen color |
+
+- **Última Carta:** when you have 1 card left, press the **Última Carta** button.
+- **Hand limit:** if a player reaches 40 cards, they lose — the player with the fewest cards wins.
+- **Forced draw:** if you have no playable card, you must draw. If you cannot draw, you lose your turn.
+
+### Connect 4
+Align 4 pieces horizontally, vertically, or diagonally. Includes AI bot (minimax + alpha-beta pruning).
+
+### Checkers
+Capture all opponent pieces or leave them with no moves. Mandatory captures. Pieces reaching the opposite edge are crowned **Queen (K)**. Includes AI bot (minimax + alpha-beta pruning).
 
 ## Features
 
