@@ -12,7 +12,7 @@
     "test:playwright": "npx playwright test"
   },
   "author": "María Picazo Sánchez",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
     "@google-cloud/secret-manager": "^6.1.1",
