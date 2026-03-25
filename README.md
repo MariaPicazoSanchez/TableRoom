@@ -25,6 +25,7 @@ A card game inspired by UNO with custom rules. Goal: be the first to empty your 
 - **Última Carta:** when you have 1 card left, press the **Última Carta** button.
 - **Hand limit:** if a player reaches 40 cards, they lose — the player with the fewest cards wins.
 - **Forced draw:** if you have no playable card, you must draw. If you cannot draw, you lose your turn.
+- Includes **AI bot** for solo play (rule-based heuristics: plays first valid card, picks the color most frequent in hand, targets the player with fewest cards on Swap).
 
 ### Connect 4
 Align 4 pieces horizontally, vertically, or diagonally. Includes AI bot (minimax + alpha-beta pruning).
