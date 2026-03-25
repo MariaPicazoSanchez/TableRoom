@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TableRoom — Play board games online</title>
+  <meta name="description" content="TableRoom is a web platform to play board games online with friends in real time. Última Carta, Connect 4, and Checkers." />
+
+  <style>
+    /* ── Design tokens ─────────────────────────────────────────── */
+    :root {
+      --primary:       #1D4ED8;
+      --primary-hover: #1E40AF;
+      --accent:        #F08A24;
+      --bg:            #c8d4e6;
+      --surface:       #d5dce8;
+      --surface2:      #cad2e0;
+      --text:          #050b1f;
+      --muted:         #2d3748;
+      --border:        rgba(5,11,31,.22);
+      --radius:        14px;
+      --shadow:        0 6px 20px rgba(5,11,31,.16);
+    }
+
+    /* ── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', Inter, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { color: var(--primary-hover); }
+    img { max-width: 100%; border-radius: var(--radius); }
+
+    /* ── Layout helpers ────────────────────────────────────────── */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+    .section    { padding: 4rem 0; }
+    .section--alt { background: var(--surface); }
+
+    /* ── Nav ───────────────────────────────────────────────────── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-brand {
+      font-weight: 800; font-size: 1.25rem;
+      color: var(--primary) !important; letter-spacing: .5px;
+    }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: var(--muted); font-weight: 600; font-size: .9rem; }
+    .nav-links a:hover { color: var(--primary); }
+    .btn-nav {
+      background: var(--primary); color: #fff !important;
+      padding: .4rem 1rem; border-radius: 999px;
+      font-weight: 700; font-size: .875rem;
+      transition: background 160ms, transform 160ms;
+    }
+    .btn-nav:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+    /* ── Hero ──────────────────────────────────────────────────── */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(29,78,216,.1); color: var(--primary);
+      border: 1px solid rgba(29,78,216,.22);
+      border-radius: 999px; padding: .3rem .85rem;
+      font-size: .8rem; font-weight: 700; letter-spacing: .04em;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 900; line-height: 1.15;
+      color: var(--primary); margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.125rem; color: var(--muted);
+      max-width: 520px; margin: 0 auto 2rem;
+    }
+    .hero-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      padding: .65rem 1.5rem; border-radius: 999px;
+      font-weight: 700; font-size: 1rem;
+      transition: background 160ms, transform 160ms;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); color: #fff; }
+    .btn-outline {
+      background: transparent; color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: .6rem 1.4rem; border-radius: 999px;
+      font-weight: 700; font-size: 1rem;
+      transition: background 160ms, color 160ms, transform 160ms;
+      display: inline-block;
+    }
+    .btn-outline:hover {
+      background: var(--primary); color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* ── Section headings ──────────────────────────────────────── */
+    .section-title {
+      font-size: 1.75rem; font-weight: 800;
+      color: var(--primary); margin-bottom: .5rem;
+    }
+    .section-sub {
+      color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem;
+    }
+
+    /* ── Feature cards (3 columns) ─────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+    .feature-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .feature-icon {
+      width: 40px; height: 40px;
+      background: rgba(29,78,216,.1);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .feature-icon svg { width: 20px; height: 20px; stroke: var(--primary); }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+    .feature-card p  { font-size: .9rem; color: var(--muted); }
+
+    /* ── Game sections ─────────────────────────────────────────── */
+    .game-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem; align-items: center;
+      margin-bottom: 4rem;
+    }
+    .game-block:last-child { margin-bottom: 0; }
+    .game-block.reverse { direction: rtl; }
+    .game-block.reverse > * { direction: ltr; }
+    .game-tag {
+      display: inline-block;
+      background: rgba(29,78,216,.1); color: var(--primary);
+      border: 1px solid rgba(29,78,216,.2);
+      border-radius: 999px; padding: .2rem .7rem;
+      font-size: .78rem; font-weight: 700; letter-spacing: .04em;
+      margin-bottom: .75rem;
+    }
+    .game-block h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: .75rem; }
+    .game-block p  { color: var(--muted); margin-bottom: 1rem; font-size: .95rem; }
+    .rules-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .rules-list li {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .9rem; color: var(--muted);
+    }
+    .rules-list li::before {
+      content: "→"; color: var(--primary);
+      font-weight: 700; flex-shrink: 0; margin-top: .05rem;
+    }
+    .gif-placeholder {
+      background: var(--surface2);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      aspect-ratio: 16/9;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: .5rem; color: var(--muted);
+      font-size: .875rem; text-align: center; padding: 1rem;
+    }
+    .gif-placeholder svg { width: 36px; height: 36px; opacity: .4; }
+    .game-gif {
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      width: 100%;
+    }
+
+    /* ── Steps ─────────────────────────────────────────────────── */
+    .steps { display: flex; flex-direction: column; gap: 1rem; }
+    .step {
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.25rem;
+    }
+    .step-num {
+      width: 32px; height: 32px; flex-shrink: 0;
+      background: var(--primary); color: #fff;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .875rem;
+    }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+    .step p  { font-size: .9rem; color: var(--muted); margin: 0; }
+
+    /* ── FAQ ───────────────────────────────────────────────────── */
+    .faq { display: flex; flex-direction: column; gap: .75rem; }
+    details {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    summary {
+      font-weight: 700; cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .95rem;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "+"; font-size: 1.2rem; color: var(--primary);
+      transition: transform 200ms;
+    }
+    details[open] summary::after { content: "−"; }
+    details p { margin-top: .75rem; color: var(--muted); font-size: .9rem; }
+
+    /* ── Footer ────────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem 0; text-align: center;
+      color: var(--muted); font-size: .875rem;
+    }
+    footer a { color: var(--primary); }
+
+    /* ── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .game-block, .game-block.reverse { grid-template-columns: 1fr; direction: ltr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container nav-inner">
+      <a class="nav-brand" href="#">TableRoom</a>
+      <div class="nav-links">
+        <a href="#games">Games</a>
+        <a href="#get-started">Get started</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <!-- Replace # with your live URL when deployed -->
+      <a class="btn-nav" href="#">Play now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">Open source · Free to play</div>
+      <h1>Board games, online,<br>with your friends</h1>
+      <p>TableRoom lets you play Última Carta, Connect 4, and Checkers in real time — from any browser, no install needed.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#">Play now</a>
+        <a class="btn-outline" href="https://github.com/MariaPicazoSanchez/TableRoom">View on GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section section--alt">
+    <div class="container">
+      <h2 class="section-title">Everything you need to play</h2>
+      <p class="section-sub">No downloads, no plugins — just open a room and play.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <h3>Real-time multiplayer</h3>
+          <p>Powered by Socket.io for instant, lag-free gameplay with your friends.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          </div>
+          <h3>Play solo with AI</h3>
+          <p>No friends online? Challenge the built-in AI bot in every game.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Secure accounts</h3>
+          <p>Sign in with Google or create a local account. Email verification included.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section class="section" id="games">
+    <div class="container">
+      <h2 class="section-title">The games</h2>
+      <p class="section-sub">Three classics, each with their own twist.</p>
+
+      <!-- Última Carta -->
+      <div class="game-block">
+        <div>
+          <span class="game-tag">Card game</span>
+          <h2>Última Carta</h2>
+          <p>A card game inspired by UNO with custom rules. Be the first to empty your hand — but watch out for special cards.</p>
+          <ul class="rules-list">
+            <li>Play a card matching color or value, or use a wildcard</li>
+            <li>Special cards: +2, +6, +8, Skip, Reverse, Double</li>
+            <li>Wildcards: +4, Swap hands, Discard All of one color</li>
+            <li>Declare "Última Carta" when you have 1 card left</li>
+            <li>Reach 40 cards and you lose — fewest cards wins</li>
+          </ul>
+        </div>
+        <div>
+          <img class="game-gif" src="img/ultimacarta.gif" alt="Última Carta gameplay">
+        </div>
+      </div>
+
+      <!-- Connect 4 -->
+      <div class="game-block reverse">
+        <div>
+          <span class="game-tag">Strategy</span>
+          <h2>Connect 4</h2>
+          <p>Drop pieces and align 4 in a row — horizontally, vertically, or diagonally. Simple rules, deep strategy.</p>
+          <ul class="rules-list">
+            <li>Pieces fall to the bottom of the column</li>
+            <li>First to align 4 wins</li>
+            <li>AI bot powered by minimax + alpha-beta pruning</li>
+          </ul>
+        </div>
+        <div>
+          <img class="game-gif" src="img/connect4.gif" alt="Connect 4 gameplay">
+        </div>
+      </div>
+
+      <!-- Checkers -->
+      <div class="game-block">
+        <div>
+          <span class="game-tag">Classic</span>
+          <h2>Checkers</h2>
+          <p>Capture all your opponent's pieces or leave them with no moves. Standard checkers rules apply.</p>
+          <ul class="rules-list">
+            <li>Captures are mandatory — if you can eat, you must</li>
+            <li>Chain captures with the same piece</li>
+            <li>Reach the opposite edge and promote to Queen (K)</li>
+            <li>AI bot powered by minimax + alpha-beta pruning</li>
+          </ul>
+        </div>
+        <div>
+          <img class="game-gif" src="img/damas.gif" alt="Checkers gameplay">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GET STARTED -->
+  <section class="section section--alt" id="get-started">
+    <div class="container">
+      <h2 class="section-title">Get started in 3 steps</h2>
+      <p class="section-sub">No downloads needed — just a browser.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h3>Create an account</h3>
+            <p>Sign up with your email or continue with Google. Verify your email to unlock all features.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h3>Set your nick</h3>
+            <p>Go to <strong>My account</strong> and choose a nick — this is what other players will see in-game.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h3>Create a room and play</h3>
+            <p>Pick a game, create a room, and share the code with your friends. Or challenge the AI bot for a solo match.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <h2 class="section-title">FAQ</h2>
+      <p class="section-sub">Common questions about the games and your account.</p>
+      <div class="faq">
+
+        <details open>
+          <summary>How do the +2, +4, +6, and +8 cards work in Última Carta?</summary>
+          <p><strong>+2:</strong> the next player draws 2 cards and loses their turn.<br>
+             <strong>+4:</strong> the next player draws 4 cards and you choose the new color. Wildcard — can always be played.<br>
+             <strong>+6 / +8:</strong> same as +2 but the next player draws 6 or 8 cards respectively.</p>
+        </details>
+
+        <details>
+          <summary>What happens if I can't play a card in Última Carta?</summary>
+          <p>You must draw 1 card. If the drawn card is playable you may play it immediately. Otherwise, you lose your turn.</p>
+        </details>
+
+        <details>
+          <summary>What is the Swap wildcard?</summary>
+          <p>Swap exchanges your entire hand with another player of your choice. If after the swap the other player has 0 cards, they win the game.</p>
+        </details>
+
+        <details>
+          <summary>What is the hand limit in Última Carta?</summary>
+          <p>If any player reaches 40 cards, the game ends immediately. The player with the fewest cards wins. This rule prevents infinite games.</p>
+        </details>
+
+        <details>
+          <summary>Why am I forced to capture in Checkers?</summary>
+          <p>It is a standard checkers rule: if a capture is available you must take it. If after capturing you can capture again with the same piece, you must continue.</p>
+        </details>
+
+        <details>
+          <summary>I didn't receive the password reset email. What should I do?</summary>
+          <p>Check your spam or promotions folder. If it still doesn't arrive, try again and make sure you entered the correct email address.</p>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <p>
+        <strong>TableRoom</strong> · MIT License · Made by
+        <a href="https://github.com/MariaPicazoSanchez">María Picazo Sánchez</a>
+      </p>
+      <p style="margin-top:.5rem;">
+        <a href="https://github.com/MariaPicazoSanchez/TableRoom">GitHub</a> ·
+        <a href="https://github.com/MariaPicazoSanchez/TableRoom/issues">Report a bug</a> ·
+        <a href="https://github.com/MariaPicazoSanchez/TableRoom/blob/main/CONTRIBUTING.md">Contribute</a>
+      </p>
+    </div>
+  </footer>
+
+</body>
+</html>

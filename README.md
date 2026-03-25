@@ -2,6 +2,8 @@
 
 A web platform to play board games online with friends in real time.
 
+**[User guide & demo → mariapicazosanchez.github.io/TableRoom](https://mariapicazosanchez.github.io/TableRoom/)**
+
 ## Games
 
 ### Última Carta
